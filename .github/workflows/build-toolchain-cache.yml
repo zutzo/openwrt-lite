@@ -1,0 +1,65 @@
+name: Build Toolchain Cache(GCC-14)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.repository_owner == 'pmkol'
+    name: ${{ matrix.model }}-musl
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        model:
+          - nanopi-r5s
+          - x86_64
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+
+    - name: Set time zone
+      run: sudo timedatectl set-timezone 'Asia/Shanghai'
+
+    - name: Show system
+      run: |
+        lscpu
+        free -h
+        df -Th
+        uname -a
+
+    - name: Set release env
+      run: |
+        sudo mkdir -p /builder
+        sudo chown -R runner.runner /builder
+        echo WORKDIR="/builder" >> "$GITHUB_ENV"
+        git config --global user.name 'actions'
+        git config --global user.email 'action@github.com'
+
+    - name: Free disk space
+      uses: sbwml/actions@free-disk
+      with:
+        build-mount-path: /builder
+
+    - name: Build System Setup
+      uses: sbwml/actions@openwrt-build-setup
+
+    - name: Compile Toolchain
+      working-directory: /builder
+      run: |
+        BUILD_TOOLCHAIN=y bash <(curl -sS https://raw.githubusercontent.com/${{ github.repository }}/main/openwrt/build.sh) server ${{ matrix.model }}
+
+    - name: Create release
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        name: openwrt-23.05
+        allowUpdates: true
+        tag: openwrt-23.05
+        commit: main
+        replacesArtifacts: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+        artifacts: ${{ env.WORKDIR }}/openwrt/toolchain-cache/*

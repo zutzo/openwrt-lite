@@ -1,0 +1,93 @@
+#!/bin/bash -e
+
+# golang - 1.23
+rm -rf feeds/packages/lang/golang
+pkg_golang=$(curl -s https://github.com/pmkol/openwrt-gh-action-sdk/commit/2a81ad56a760e8629ad38fb820fd931f5323d54f.patch | awk '/^\+.*packages_lang_golang/ {sub(/^\+/, ""); print}' | sed -n 's/.*git clone https:\/\/github.com\/\(.*\) feeds\/packages\/lang\/golang/\1/p')
+git clone https://$github/$pkg_golang --depth 1 feeds/packages/lang/golang
+[ "$DEV_BUILD" = "y" ] && sed -i 's/GO_AMD64:=v1/GO_AMD64:=v2/g' feeds/packages/lang/golang/golang-values.mk
+
+# node - prebuilt
+rm -rf feeds/packages/lang/node/*
+curl -s https://$mirror/openwrt/patch/node/Makefile > feeds/packages/lang/node/Makefile
+
+# boost - bump version
+rm -rf feeds/packages/libs/boost
+cp -a ../master/packages/libs/boost feeds/packages/libs/boost
+
+# default settings
+git clone https://$github/pmkol/default-settings package/new/default-settings -b lite --depth 1
+
+# coremark - prebuilt
+rm -rf feeds/packages/utils/coremark
+if [ "$platform" = "rk3568" ]; then
+    curl -s https://$mirror/openwrt/patch/coremark/coremark.aarch64-4-threads > ../master/extd-23.05/coremark/src/musl/coremark.aarch64
+elif [ "$platform" = "rk3399" ]; then
+    curl -s https://$mirror/openwrt/patch/coremark/coremark.aarch64-6-threads > ../master/extd-23.05/coremark/src/musl/coremark.aarch64
+fi
+
+# haproxy - bump version
+rm -rf feeds/packages/net/haproxy
+sed -i '/ADDON+=USE_QUIC_OPENSSL_COMPAT=1/d' ../master/lite-23.05/haproxy/Makefile
+
+# mihomo - prebuilt
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y"; then
+    mkdir -p files/etc/mihomo/run/ui
+    if [ "$MINIMAL_BUILD" = "y" ]; then
+        curl -Lso files/etc/mihomo/run/GeoSite.dat https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
+        curl -Lso files/etc/mihomo/run/GeoIP.dat https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat
+    fi
+    curl -Lso files/etc/mihomo/run/geoip.metadb https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.metadb
+    curl -Lso files/etc/mihomo/run/ASN.mmdb https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb
+    curl -Lso zashboard-gh-pages.zip https://$github/Zephyruso/zashboard/archive/refs/heads/gh-pages.zip
+    unzip zashboard-gh-pages.zip
+    rm -f zashboard-gh-pages.zip
+    mv zashboard-gh-pages files/etc/mihomo/run/ui/zashboard
+fi
+
+# irqbalance - disable build with numa
+if [ "$ENABLE_DPDK" = "y" ]; then
+    curl -s https://$mirror/openwrt/patch/irqbalance/011-meson-numa.patch > feeds/packages/utils/irqbalance/patches/011-meson-numa.patch
+    sed -i '/-Dcapng=disabled/i\\t-Dnuma=disabled \\' feeds/packages/utils/irqbalance/Makefile
+fi
+
+# samba4
+rm -rf feeds/packages/{net/samba4,libs/liburing} feeds/luci/applications/luci-app-samba4
+# rk3568 bind cpus
+[ "$platform" = "rk3568" ] && sed -i 's#/usr/sbin/smbd -F#/usr/bin/taskset -c 1,0 /usr/sbin/smbd -F#' ../master/extd-23.05/samba4/files/samba.init
+
+# sqm - translation
+mkdir -p feeds/packages/net/sqm-scripts/patches
+curl -s https://$mirror/openwrt/patch/sqm/001-help-translation.patch > feeds/packages/net/sqm-scripts/patches/001-help-translation.patch
+
+# tailscale - prebuilt
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg" | grep -q "^CONFIG_PACKAGE_luci-app-tailscale=y"; then
+    mkdir -p files/etc/hotplug.d/iface
+    curl -s https://$mirror/openwrt/files/etc/hotplug.d/iface/90-tailscale > files/etc/hotplug.d/iface/90-tailscale
+fi
+
+# theme - copyright link
+sed -i 's/openwrt\/luci/pmkol\/openwrt-lite/g' ../master/extd-23.05/luci-theme-argon/luasrc/view/themes/argon/footer.htm
+sed -i 's/openwrt\/luci/pmkol\/openwrt-lite/g' ../master/extd-23.05/luci-theme-argon/luasrc/view/themes/argon/footer_login.htm
+sed -i 's/openwrt\/luci/pmkol\/openwrt-lite/g' feeds/luci/themes/luci-theme-bootstrap/ucode/template/themes/bootstrap/footer.ut
+sed -i 's/openwrt\/luci/pmkol\/openwrt-lite/g' feeds/luci/themes/luci-theme-material/ucode/template/themes/material/footer.ut
+sed -i 's/openwrt\/luci/pmkol\/openwrt-lite/g' feeds/luci/themes/luci-theme-openwrt-2020/ucode/template/themes/openwrt2020/footer.ut
+
+# ttyd
+rm -rf feeds/luci/applications/luci-app-ttyd
+sed -i 's/procd_set_param stdout 1/procd_set_param stdout 0/g' feeds/packages/utils/ttyd/files/ttyd.init
+sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/utils/ttyd/files/ttyd.init
+
+# watchcat - clean config
+true > feeds/packages/utils/watchcat/files/watchcat.config
+
+# clean up old feeds
+rm -rf feeds/luci/applications/{luci-app-aria2,luci-app-frpc,luci-app-frps,luci-app-ksmbd,luci-app-natmap,luci-app-nlbwmon,luci-app-upnp}
+rm -rf feeds/packages/admin/netdata
+rm -rf feeds/packages/net/{aria2,ddns-scripts,frp,iperf3,ksmbd-tools,miniupnpd,nlbwmon,openssh,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale}
+rm -rf feeds/packages/utils/{lsof,screen,unzip,vim,zstd}
+
+# extd-23.05
+mv ../master/extd-23.05 package/new/extd
+
+# lite-23.05
+mv ../master/lite-23.05 package/new/lite

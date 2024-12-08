@@ -1,0 +1,5 @@
+/usr/bin/ddns-go
+/usr/bin/mihomo
+/usr/bin/sing-box
+/usr/bin/tailscaled
+/usr/bin/yq
