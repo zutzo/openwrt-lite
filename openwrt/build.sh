@@ -88,8 +88,10 @@ fi
 [ -n "$LAN" ] && export LAN=$LAN || export LAN=10.0.0.1
 
 # build flags
-if [ "$(whoami)" = "runner" ] && [ -n "$GITHUB_REPO" ]; then
+if [ "$(whoami)" = "runner" ] && [ -n "$GITHUB_REPO" ] && [ "$BUILD_TOOLCHAIN" != "y" ]; then
     export KERNEL_CLANG_LTO=y ENABLE_LTO=y ENABLE_LRNG=y ENABLE_BPF=y USE_GCC14=y ENABLE_MOLD=y ENABLE_DPDK=$ENABLE_DPDK BUILD_FAST=y
+elif [ "$BUILD_TOOLCHAIN" = "y" ]; then
+    export ENABLE_LTO=y ENABLE_BPF=y USE_GCC14=y ENABLE_MOLD=y
 else
     export KERNEL_CLANG_LTO=y ENABLE_LTO=y ENABLE_LRNG=y ENABLE_BPF=y USE_GCC14=y ENABLE_MOLD=y ENABLE_DPDK=$ENABLE_DPDK
     [ $(grep MemTotal /proc/meminfo | awk '{print $2}') -lt $((15 * 1024 * 1024)) ] && export CLANG_LTO_THIN=y
