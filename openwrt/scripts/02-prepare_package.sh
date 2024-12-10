@@ -83,7 +83,7 @@ true > feeds/packages/utils/watchcat/files/watchcat.config
 # clean up old feeds
 rm -rf feeds/luci/applications/{luci-app-aria2,luci-app-frpc,luci-app-frps,luci-app-ksmbd,luci-app-natmap,luci-app-nlbwmon,luci-app-upnp}
 rm -rf feeds/packages/admin/netdata
-rm -rf feeds/packages/net/{aria2,ddns-scripts,frp,iperf3,ksmbd-tools,miniupnpd,nlbwmon,openssh,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale}
+rm -rf feeds/packages/net/{aria2,ddns-scripts,frp,iperf3,ksmbd-tools,microsocks,miniupnpd,nlbwmon,openssh,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale,zerotier}
 rm -rf feeds/packages/utils/{lsof,screen,unzip,vim,zstd}
 
 # extd-23.05

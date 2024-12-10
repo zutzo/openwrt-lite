@@ -100,7 +100,7 @@ if [ "$USE_GCC14" = y ]; then
     export gcc_version=14
 else
     export gcc_version=11
-    # disable mold
+    # disable mold for gcc11
     [ "$ENABLE_MOLD" = y ] && export ENABLE_MOLD=n
 fi
 
@@ -221,16 +221,16 @@ bash 05-fix-source.sh
 bash 06-custom.sh
 [ "$(whoami)" = "runner" ] && endgroup
 
-# openwrt-23.05 gcc14
+# toolchain
 [ "$(whoami)" = "runner" ] && group "patching toolchain"
 if [ "$USE_GCC14" = "y" ]; then
     rm -rf toolchain/binutils
     cp -a ../master/openwrt/toolchain/binutils toolchain/binutils
     rm -rf toolchain/gcc
     cp -a ../master/openwrt/toolchain/gcc toolchain/gcc
-    curl -s https://$mirror/openwrt/generic/config-gcc14 >> .config
+    curl -s https://$mirror/openwrt/generic/config-gcc14 > .config
 else
-    curl -s https://$mirror/openwrt/generic/config-gcc11 >> .config
+    curl -s https://$mirror/openwrt/generic/config-gcc11 > .config
 fi
 [ "$(whoami)" = "runner" ] && endgroup
 
@@ -241,27 +241,29 @@ rm -rf ../master
 ([ "$GITHUB_REPO" != "pmkol/openwrt-lite" ] || [ "$DEV_BUILD" = "y" ]) && export CONFIG_CUSTOM=y
 if [ "$CONFIG_CUSTOM" = "y" ]; then
     export cfg=custom
+    export cfg_cmd="eval awk '/### APPS/{exit} {print}'"
 else
     [ "$MINIMAL_BUILD" = "y" ] && export cfg=lite || export cfg=server
+    export cfg_cmd="cat"
 fi
 
 # config-devices
 if [ "$platform" = "x86_64" ]; then
-    curl -s https://$mirror/openwrt/23-config-musl-x86$([ "$CONFIG_CUSTOM" = "y" ] && echo "-dev") > .config
+    curl -s https://$mirror/openwrt/23-config-musl-x86$([ "$DEV_BUILD" = "y" ] && echo "-dev") >> .config
 elif [ "$platform" = "rk3568" ]; then
-    curl -s https://$mirror/openwrt/23-config-musl-r5s > .config
+    curl -s https://$mirror/openwrt/23-config-musl-r5s >> .config
 else
-    curl -s https://$mirror/openwrt/23-config-musl-r4s > .config
+    curl -s https://$mirror/openwrt/23-config-musl-r4s >> .config
 fi
 
 # config-common
 [ "$CONFIG_CUSTOM" = "y" ] && curl -s https://$mirror/openwrt/23-config-common-custom >> .config
 if [ "$MINIMAL_BUILD" = "y" ]; then
-    curl -s https://$mirror/openwrt/23-config-common-lite$([ "$CONFIG_CUSTOM" = "y" ] && echo " | sed '/### APPS/,$d'") >> .config
+    curl -s https://$mirror/openwrt/23-config-common-lite | $cfg_cmd >> .config
     sed -i '/DOCKER/Id' .config
     echo 'VERSION_TYPE="lite"' >> package/base-files/files/usr/lib/os-release
 else
-    curl -s https://$mirror/openwrt/23-config-common-server$([ "$CONFIG_CUSTOM" = "y" ] && echo " | sed '/### APPS/,$d'") >> .config
+    curl -s https://$mirror/openwrt/23-config-common-server | $cfg_cmd >> .config
     echo 'VERSION_TYPE="server"' >> package/base-files/files/usr/lib/os-release
 fi
 
