@@ -12,6 +12,11 @@ if [ "$USE_GCC14" = y ]; then
         curl -sLO https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/libwebsockets/011-fix-enum-int-mismatch-mbedtls.patch
         curl -sLO https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/libwebsockets/100-fix-uninitialized-variable-usage.patch
     popd
+    # nginx-util
+    pushd feeds/packages
+        curl -s https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/nginx-util/0001-nginx-util-fix-compilation-with-GCC13.patch | patch -p1
+        curl -s https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/nginx-util/0002-nginx-util-move-to-pcre2.patch | patch -p1
+    popd
     # wsdd2
     mkdir -p feeds/packages/net/wsdd2/patches
     curl -s https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/wsdd2/100-wsdd2-cast-from-pointer-to-integer-of-different-size.patch > feeds/packages/net/wsdd2/patches/100-wsdd2-cast-from-pointer-to-integer-of-different-size.patch
