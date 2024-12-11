@@ -70,7 +70,7 @@ get_branch_timestamp=$(curl -s "https://api.github.com/repos/pmkol/openwrt-sourc
 export toolchain_version=openwrt-23.05
 
 if [ "$1" = "dev" ]; then
-    export branch=v23.05-dev
+    export branch=${get_branch_version:-"v23.05-dev"}
     export DEV_BUILD=y
 elif [ "$1" = "lite" ]; then
     export branch=${get_branch_version:-"v23.05-dev"}
@@ -165,7 +165,7 @@ git clone https://$github/pmkol/openwrt-feeds master/lite-23.05 -b lite-23.05 --
 if [ -d openwrt ]; then
     cd openwrt
     echo "$CURRENT_DATE" > version.date
-    [ "$GITHUB_REPO" = "pmkol/openwrt-lite" ] && $OPENWRT_KEY && cat key-build.pub
+    [ "$GITHUB_REPO" = "pmkol/openwrt-lite" ] && curl -Os $OPENWRT_KEY && tar zxf key.tar.gz && rm -f key.tar.gz && cat key-build.pub
 else
     echo -e "${RED_COLOR}Failed to download source code${RES}"
     exit 1
@@ -379,7 +379,7 @@ if [ "$platform" = "x86_64" ]; then
         rm -f $kmodpkg_name/Packages*
         # driver firmware
         cp -a bin/packages/x86_64/base/*firmware*.ipk $kmodpkg_name/
-        bash kmod-sign $kmodpkg_name
+        [ "$GITHUB_REPO" = "pmkol/openwrt-lite" ] && bash kmod-sign $kmodpkg_name || echo "skip kmod-sign"
         tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
         rm -rf $kmodpkg_name
     fi
@@ -395,7 +395,7 @@ else
         rm -f $kmodpkg_name/Packages*
         # driver firmware
         cp -a bin/packages/aarch64_generic/base/*firmware*.ipk $kmodpkg_name/
-        bash kmod-sign $kmodpkg_name
+        [ "$GITHUB_REPO" = "pmkol/openwrt-lite" ] && bash kmod-sign $kmodpkg_name || echo "skip kmod-sign"
         tar zcf aarch64-$kmodpkg_name.tar.gz $kmodpkg_name
         rm -rf $kmodpkg_name
     fi
