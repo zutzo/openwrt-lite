@@ -1,7 +1,5 @@
 #!/bin/bash -e
 
-#################################################################
-
 # kenrel vermagic
 sed -ie 's/^\(.\).*vermagic$/\1cp $(TOPDIR)\/.vermagic $(LINUX_DIR)\/.vermagic/' include/kernel-defaults.mk
 grep HASH include/kernel-6.11 | awk -F'HASH-' '{print $2}' | awk '{print $1}' | md5sum | awk '{print $1}' > .vermagic
@@ -59,7 +57,7 @@ pushd target/linux/generic/backport-6.11
     curl -Os https://$mirror/openwrt/patch/kernel-6.11/bbr3/010-bbr3-0016-net-tcp_bbr-v3-update-TCP-bbr-congestion-control-mod.patch
     curl -Os https://$mirror/openwrt/patch/kernel-6.11/bbr3/010-bbr3-0017-net-tcp_bbr-v3-ensure-ECN-enabled-BBR-flows-set-ECT-.patch
     curl -Os https://$mirror/openwrt/patch/kernel-6.11/bbr3/010-bbr3-0018-tcp-export-TCPI_OPT_ECN_LOW-in-tcp_info-tcpi_options.patch
-    [ "$TESTING_KERNEL" = "y" ] && curl -Os https://$mirror/openwrt/patch/kernel-6.11/bbr3/010-bbr3-0019-x86-cfi-bpf-Add-tso_segs-and-skb_marked_lost-to-bpf_.patch
+    curl -Os https://$mirror/openwrt/patch/kernel-6.11/bbr3/010-bbr3-0019-x86-cfi-bpf-Add-tso_segs-and-skb_marked_lost-to-bpf_.patch
 popd
 
 # LRNG v54/56 - linux-6.11

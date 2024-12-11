@@ -5,10 +5,6 @@ sed -i "/CONFIGURE_ARGS/i\TARGET_CFLAGS += -ffat-lto-objects\n" feeds/packages/l
 
 # fix gcc14
 if [ "$USE_GCC14" = y ]; then
-    # lrzsz
-    curl -s https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/lrzsz/201-fix-build-with-gcc14.patch > feeds/packages/utils/lrzsz/patches/201-fix-build-with-gcc14.patch
-    [ "$platform" = "x86_64" ] || [ "$platform" = "rk3399" ] && curl -s https://$mirror/openwrt/patch/openwrt-6.x/gcc-14/lrzsz/202-fix-build-ansi-prototypes.patch > feeds/packages/utils/lrzsz/patches/202-fix-build-ansi-prototypes.patch
-    mv feeds/packages/utils/lrzsz package/new/lrzsz
     # libwebsockets
     mkdir feeds/packages/libs/libwebsockets/patches
     pushd feeds/packages/libs/libwebsockets/patches

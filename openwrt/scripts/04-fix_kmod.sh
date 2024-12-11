@@ -76,6 +76,9 @@ curl -s https://$mirror/openwrt/patch/packages-patches/coova-chilli/020-libxt_co
 [ "$KERNEL_CLANG_LTO" = "y" ] && curl -s https://$mirror/openwrt/patch/packages-patches/coova-chilli/Makefile > feeds/packages/net/coova-chilli/Makefile
 
 # xtables-addons
+rm -f feeds/packages/net/xtables-addons/patches/210-freebsd-build-fix.patch
+curl -s https://$mirror/openwrt/patch/packages-patches/xtables-addons/200-add-lua-packetscript.patch > feeds/packages/net/xtables-addons/patches/200-add-lua-packetscript.patch
+curl -s https://$mirror/openwrt/patch/packages-patches/xtables-addons/201-fix-lua-packetscript.patch > feeds/packages/net/xtables-addons/patches/201-fix-lua-packetscript.patch
 curl -s https://$mirror/openwrt/patch/packages-patches/xtables-addons/202-fix-lua-packetscript-for-linux-6.6.patch > feeds/packages/net/xtables-addons/patches/202-fix-lua-packetscript-for-linux-6.6.patch
 curl -s https://$mirror/openwrt/patch/packages-patches/xtables-addons/301-fix-build-with-linux-6.11.patch > feeds/packages/net/xtables-addons/patches/301-fix-build-with-linux-6.11.patch
 curl -s https://$mirror/openwrt/patch/packages-patches/xtables-addons/900-mconfig.patch > feeds/packages/net/xtables-addons/patches/900-mconfig.patch
