@@ -30,7 +30,8 @@ fi
 
 # haproxy - bump version
 rm -rf feeds/packages/net/haproxy
-sed -i '/ADDON+=USE_QUIC_OPENSSL_COMPAT=1/d' ../master/lite-23.05/haproxy/Makefile
+mv ../master/lite-23.05/haproxy feeds/packages/net/haproxy
+sed -i '/ADDON+=USE_QUIC_OPENSSL_COMPAT=1/d' feeds/packages/net/haproxy/Makefile
 
 # mihomo - prebuilt
 if curl -s "https://$mirror/openwrt/23-config-common-$cfg" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y"; then
