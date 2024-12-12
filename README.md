@@ -45,7 +45,7 @@ https://github.com/pmkol/openwrt-lite/releases
 
   预装少量插件：
 
-  Mihomo, Sing-box, DDNS, Tailscale, SMB, UPnP, Socat, QoSmate
+  Mihomo, Sing-box, DDNS, Tailscale, SMB, UPnP, EQoS, Socat
 
 - Server 版
 
@@ -56,17 +56,17 @@ https://github.com/pmkol/openwrt-lite/releases
   | ⚓ 服务 | 🗳️ Docker  | 🩺 网络  |
   |  :----  |  :----  |  :----  |
   | Xray | Dockerman | SpeedTest |
-  | Sing-Box | Docker | QoSmate |
+  | Sing-Box | Docker | EQoS |
   | Mihomo | Dockerd | UPnP |
   | MosDNS | Docker-compose | Bandwidth Monitor |
   | DDNS | | Socat |
   | Watchcat | | Natmap |
-  | Aira2 | | L2TP |
-  | Frp | | WireGuard |
+  | Frp | | L2TP |
+  | Tailscale | | WireGuard |
+  | ZeroTier | | |
+  | Aira2 | | |
   | SMB | | |
   | WOL | | |
-  | Tailscale | | |
-  | ZeroTier | | |
 
 ---------------
 
