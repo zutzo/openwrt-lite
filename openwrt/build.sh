@@ -378,6 +378,7 @@ if [ "$platform" = "x86_64" ]; then
         cp -a bin/targets/x86/*/packages $kmodpkg_name
         rm -f $kmodpkg_name/Packages*
         # driver firmware
+        rm -f bin/packages/x86_64/base/{amdgpu-firmware*.ipk,radeon-firmware*.ipk}
         cp -a bin/packages/x86_64/base/*firmware*.ipk $kmodpkg_name/
         [ "$GITHUB_REPO" = "pmkol/openwrt-lite" ] && bash kmod-sign $kmodpkg_name || echo "skip kmod-sign"
         tar zcf x86_64-$kmodpkg_name.tar.gz $kmodpkg_name
