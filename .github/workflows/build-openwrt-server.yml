@@ -154,7 +154,7 @@ jobs:
           OpenWrt 23.05 Server with Kernel 6.11 Enhanced
 
           Includes full-featured server packages:
-          Support for docker and iptables, along with more pre-installed luci apps.
+          Supports Docker and Iptables, with more extensive pre-installed LuCI apps for advanced users.
         commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}
