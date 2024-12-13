@@ -346,6 +346,12 @@ if [ "$BUILD_TOOLCHAIN" = "y" ]; then
     tar -I "zstd -19 -T$(nproc --all)" -cf toolchain-cache/toolchain_musl_"$toolchain_arch"_gcc-"$gcc_version".tar.zst ./{build_dir,dl,staging_dir,tmp}
     echo -e "\n${GREEN_COLOR} Build success! ${RES}"
     exit 0
+elif [ "$CLANG_LTO_THIN" = "y" ] && [ "$BUILD_TOOLCHAIN" != "y" ] && [ "$BUILD_FAST" != "y" ]; then
+    echo -e "\r\n${GREEN_COLOR}Building OpenWrt ...${RES}\r\n"
+    sed -i "/BUILD_DATE/d" package/base-files/files/usr/lib/os-release
+    sed -i "/BUILD_ID/aBUILD_DATE=\"$CURRENT_DATE\"" package/base-files/files/usr/lib/os-release
+    make toolchain/compile
+    make -j$cores IGNORE_ERRORS="n m"
 else
     if [ "$BUILD_FAST" = "y" ]; then
         echo -e "\r\n${GREEN_COLOR}Building tools/clang ...${RES}\r\n"
