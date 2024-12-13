@@ -34,7 +34,7 @@ mv ../master/lite-23.05/haproxy feeds/packages/net/haproxy
 sed -i '/ADDON+=USE_QUIC_OPENSSL_COMPAT=1/d' feeds/packages/net/haproxy/Makefile
 
 # mihomo - prebuilt
-if curl -s "https://$mirror/openwrt/23-config-common-$cfg" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y"; then
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y"; then
     mkdir -p files/etc/mihomo/run/ui
     if [ "$MINIMAL_BUILD" = "y" ]; then
         curl -Lso files/etc/mihomo/run/GeoSite.dat https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
@@ -64,7 +64,7 @@ mkdir -p feeds/packages/net/sqm-scripts/patches
 curl -s https://$mirror/openwrt/patch/sqm/001-help-translation.patch > feeds/packages/net/sqm-scripts/patches/001-help-translation.patch
 
 # tailscale - prebuilt
-if curl -s "https://$mirror/openwrt/23-config-common-$cfg" | grep -q "^CONFIG_PACKAGE_luci-app-tailscale=y"; then
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-tailscale=y"; then
     mkdir -p files/etc/hotplug.d/iface
     curl -s https://$mirror/openwrt/files/etc/hotplug.d/iface/90-tailscale > files/etc/hotplug.d/iface/90-tailscale
 fi

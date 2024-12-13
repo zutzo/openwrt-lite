@@ -200,6 +200,16 @@ if [ -f ../dl.gz ]; then
     tar xf ../dl.gz -C .
 fi
 
+# config version
+([ "$GITHUB_REPO" != "pmkol/openwrt-lite" ] || [ "$DEV_BUILD" = "y" ]) && export CONFIG_CUSTOM=y
+if [ "$CONFIG_CUSTOM" = "y" ]; then
+    export cfg_ver=custom
+    export cfg_cmd="eval awk '/### APPS/{exit} {print}'"
+else
+    [ "$MINIMAL_BUILD" = "y" ] && export cfg_ver=lite || export cfg_ver=server
+    export cfg_cmd="cat"
+fi
+
 ###############################################
 echo -e "\n${GREEN_COLOR}Patching ...${RES}\n"
 
@@ -238,16 +248,6 @@ fi
 
 rm -f 0*-*.sh
 rm -rf ../master
-
-# config-version
-([ "$GITHUB_REPO" != "pmkol/openwrt-lite" ] || [ "$DEV_BUILD" = "y" ]) && export CONFIG_CUSTOM=y
-if [ "$CONFIG_CUSTOM" = "y" ]; then
-    export cfg=custom
-    export cfg_cmd="eval awk '/### APPS/{exit} {print}'"
-else
-    [ "$MINIMAL_BUILD" = "y" ] && export cfg=lite || export cfg=server
-    export cfg_cmd="cat"
-fi
 
 # config-devices
 if [ "$platform" = "x86_64" ]; then
