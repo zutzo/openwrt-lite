@@ -3,3 +3,4 @@
 /usr/bin/sing-box
 /usr/bin/tailscaled
 /usr/bin/yq
+/usr/sbin/tailscaled
