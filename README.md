@@ -1,9 +1,11 @@
 # OpenWrt Lite 23.05
 
 ### 基于原生 OpenWrt 优化的固件，提供高效、稳定的使用体验
-该项目基于官方软件源，引入扩展软件源，升级无需重新编译、写入固件
+该项目使用自动构建的扩展软件源，优化、修复官方插件，补充官方源中未包含的常用插件
 
-欢迎加入交流群 [OpenWrt-mihomo](https://t.me/+xqUr1lp9FD0xZDM1)
+仅需安装、配置一次，后续升级无需重新刷写、配置固件
+
+欢迎加入交流群：[OpenWrt-mihomo](https://t.me/+xqUr1lp9FD0xZDM1)
 
 #### 固件下载：
 https://github.com/pmkol/openwrt-lite/releases
@@ -22,26 +24,34 @@ https://github.com/pmkol/openwrt-lite/releases
 【分区挂载】
 系统 -> 磁盘管理 将系统盘剩余空间创建新分区
 系统 -> 挂载点   启用新分区并挂载至/opt目录
+
+【性能测试】
+在控制台执行命令 /etc/coremark.sh
+状态 -> 概览     查看CPU的CoreMark分数
 ```
 
 ---------------
 
 ### 固件说明：
-- 优化 Linux 内核，升级并固定内核版本 6.11.11
+- 优化与升级 Linux Kernel 6.11.11 
   - [x] Full cone NAT
   - [x] TCP BBRv3
   - [x] TCP Brutal
   - [x] LLVM-BPF
   - [x] Shortcut-FE
+  - [x] Multipath TCP
+- 固定内核、驱动至已在生产环境中验证的较高版本，兼顾系统优化与稳定性
+- 优化编译工具链与参数，提升系统性能
 - 内置 OpenWrt 扩展软件源，支持常用插件的在线安装与升级
-- 轻量集成与优化常用插件，修复多处上游插件BUG
+- 系统默认使用支持指令补全功能的Bash
+- 轻量集成常用插件，优化、修复上游插件BUG
 
 ---------------
 
 ### 版本说明：
 - Lite 版
 
-  适合绝大部分用户使用
+  适合绝大部分用户使用，压缩部分预装插件
 
   预装少量插件：
 
@@ -49,7 +59,7 @@ https://github.com/pmkol/openwrt-lite/releases
 
 - Server 版
 
-  增加了 Docker 与 Iptables 的支持，适合有 Linux 运维能力的高级用户使用
+  增加了 Docker 与 Iptables 的支持，插件无压缩，适合有 Linux 运维能力的高级用户使用
 
   预装以下插件：
 
@@ -75,9 +85,20 @@ https://github.com/pmkol/openwrt-lite/releases
 
   绝大部分情况下，通过软件包仓库在线升级插件即可
   ``` 
-  注意不要在线升级 luci-mod 开头的系统插件
+  注意不要升级下列系统插件：
+  luci-base | luci-mod-network | luci-mod-status | luci-mod-system
   ```
-  
+
+  系统已内置软件包定时升级功能，执行升级时将自动排除系统插件，默认为关闭状态
+
+  系统 -> 计划任务
+
+  删除下方命令前的注释`#`即可开启 *每日5点* 更新非系统插件的软件包
+  ```diff
+  - #0 5 * * * opkg list-upgradable | grep -vE "(luci-base|luci-mod-)" | awk '{print $1}' | xargs opkg upgrade
+  + 0 5 * * * opkg list-upgradable | grep -vE "(luci-base|luci-mod-)" | awk '{print $1}' | xargs opkg upgrade
+  ```
+
 - 固件升级
 
   系统 -> 备份与升级 -> 刷写新固件
