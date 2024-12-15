@@ -66,15 +66,16 @@ https://github.com/pmkol/openwrt-lite/releases
   | ⚓ 服务 | 🗳️ Docker  | 🩺 网络  |
   |  :----  |  :----  |  :----  |
   | Xray | Dockerman | SpeedTest |
-  | Sing-Box | Docker | EQoS |
-  | Mihomo | Dockerd | UPnP |
-  | MosDNS | Docker-compose | Bandwidth Monitor |
+  | Sing-Box | Docker | UPnP |
+  | Mihomo | Dockerd | Bandwidth Monitor |
+  | MosDNS | Docker-compose | EQoS |
   | DDNS | | Socat |
-  | Watchcat | | Natmap |
   | Frp | | L2TP |
   | Tailscale | | WireGuard |
   | ZeroTier | | |
+  | Watchcat | | |
   | Aira2 | | |
+  | NATMap | | |
   | SMB | | |
   | WOL | | |
 
@@ -93,10 +94,10 @@ https://github.com/pmkol/openwrt-lite/releases
 
   系统 -> 计划任务
 
-  删除下方命令前的注释`#`即可开启 *每日5点* 更新非系统插件的软件包
-  ```diff
-  - #0 5 * * * opkg list-upgradable | grep -vE "(luci-base|luci-mod-)" | awk '{print $1}' | xargs opkg upgrade
-  + 0 5 * * * opkg list-upgradable | grep -vE "(luci-base|luci-mod-)" | awk '{print $1}' | xargs opkg upgrade
+  删除下方命令前的注释 `#` 即可开启 *每日5点* 更新非系统插件的软件包
+
+  ```
+  0 5 * * * opkg list-upgradable | grep -vE "(luci-base|luci-mod-)" | awk '{print $1}' | xargs opkg upgrade
   ```
 
 - 固件升级
