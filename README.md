@@ -49,7 +49,7 @@ https://github.com/pmkol/openwrt-lite/releases
 ---------------
 
 ### 版本说明：
-- Lite 版
+- **Lite**
 
   适合绝大部分用户使用，压缩部分预装插件
 
@@ -57,7 +57,11 @@ https://github.com/pmkol/openwrt-lite/releases
 
   Mihomo, Sing-box, DDNS, Tailscale, SMB, UPnP, EQoS, Socat
 
-- Server 版
+- **Thin**
+
+  基于 Lite 版本，无任何插件，仅包含内核级功能与模板
+
+- **Server**
 
   增加了 Docker 与 Iptables 的支持，插件无压缩，适合有 Linux 运维能力的高级用户使用
 
@@ -86,7 +90,7 @@ https://github.com/pmkol/openwrt-lite/releases
 
   绝大部分情况下，通过软件包仓库在线升级插件即可
   ``` 
-  注意不要升级下列系统插件：
+  注意不要升级以下系统插件：
   luci-base | luci-mod-network | luci-mod-status | luci-mod-system
   ```
 
@@ -245,6 +249,14 @@ export CN_PROXY=y
 
 -----------------
 
-### 源码鸣谢：
-[OpenWrt](https://github.com/openwrt/openwrt)
- | [r4s_build_script](https://github.com/sbwml/r4s_build_script/tree/openwrt-23.05)
+### 特别致谢：
+
+#### 开源项目
+- [OpenWrt](https://github.com/openwrt/openwrt)
+- [r4s_build_script](https://github.com/sbwml/r4s_build_script/tree/openwrt-23.05)
+
+#### 社区成员
+- [@Joseph Mory](https://github.com/morytyann)
+- [@ApoisL](https://github.com/vernlau)
+
+`"Stay hungry, Stay foolish..."`
