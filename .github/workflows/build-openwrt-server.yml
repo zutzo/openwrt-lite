@@ -153,6 +153,7 @@ jobs:
         body: |
           OpenWrt 23.05 Server with Kernel 6.11 Enhanced
 
+          - **Server Version**
           Includes full-featured server packages:
           Supports Docker and Iptables, with more extensive pre-installed LuCI apps for advanced users.
         commit: main

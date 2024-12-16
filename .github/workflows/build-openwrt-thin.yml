@@ -153,8 +153,12 @@ jobs:
         body: |
           OpenWrt 23.05 Lite with Kernel 6.11 Enhanced
 
+          - **Lite Version**
           Includes select few lite packages:
           Mihomo, Sing-box, DDNS, Tailscale, SMB, UPnP, EQoS, Socat.
+
+          - **Thin Version**
+          Includes only kernel-level features and templates.
         commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}

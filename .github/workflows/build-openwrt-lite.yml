@@ -136,6 +136,7 @@ jobs:
           cp -a openwrt/bin/targets/x86/*/config.buildinfo info/config.buildinfo
           cd rom && sha256sum *gz > ../info/sha256sums.txt
         fi
+        for file in *.img.gz; do mv "$file" "${file%.img.gz}-lite.img.gz"; done
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
@@ -153,8 +154,12 @@ jobs:
         body: |
           OpenWrt 23.05 Lite with Kernel 6.11 Enhanced
 
+          - **Lite Version**
           Includes select few lite packages:
           Mihomo, Sing-box, DDNS, Tailscale, SMB, UPnP, EQoS, Socat.
+
+          - **Thin Version**
+          Includes only kernel-level features and templates.
         commit: main
         replacesArtifacts: true
         token: ${{ secrets.GITHUB_TOKEN }}

@@ -110,6 +110,7 @@ jobs:
     - name: Compile OpenWrt
       working-directory: /builder
       id: compile
+      continue-on-error: true
       run: |
         export GITHUB_REPO=${{ github.repository }}
         export ${{ github.event.inputs.build_options }}
