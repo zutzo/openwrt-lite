@@ -18,7 +18,7 @@ cp -a ../master/packages/libs/boost feeds/packages/libs/boost
 git clone https://$github/pmkol/default-settings package/new/default-settings -b lite --depth 1
 
 # luci - replace version with build date
-sed -i '/# timezone/i sed -i "s/\\(DISTRIB_DESCRIPTION=\\).*/\\1'\''OpenWrt $(sed -n "s/DISTRIB_DESCRIPTION='\''OpenWrt \\([^ ]*\\) .*/\\1/p" /etc/openwrt_release)'\'',/" /etc/openwrt_release\nsource /etc/openwrt_release \&\& sed -i -e "s/distversion\\s=\\s\\".*\\"/distversion = \\"$DISTRIB_ID $DISTRIB_RELEASE ($DISTRIB_REVISION)\\"/g" -e '\''s/distname    = .*$/distname    = ""/g'\'' /usr/lib/lua/luci/version.lua\nsed -i "s/luciname    = \\".*\\"/luciname    = \\"LuCI openwrt-23.05\\"/g" /usr/lib/lua/luci/version.lua\nsed -i "s/luciversion = \\".*\\"/luciversion = \\"v'$(date +%Y%m%d)'\\"/g" /usr/lib/lua/luci/version.lua\necho "export const revision = '\''v'$(date +%Y%m%d)'\'\'', branch = '\''LuCI openwrt-23.05'\'';" > /usr/share/ucode/luci/version.uc\n/etc/init.d/rpcd restart\n' package/new/default-settings/default/zzz-default-settings
+[ "$NO_APPS" != "y" ] && sed -i '/# timezone/i sed -i "s/\\(DISTRIB_DESCRIPTION=\\).*/\\1'\''OpenWrt $(sed -n "s/DISTRIB_DESCRIPTION='\''OpenWrt \\([^ ]*\\) .*/\\1/p" /etc/openwrt_release)'\'',/" /etc/openwrt_release\nsource /etc/openwrt_release \&\& sed -i -e "s/distversion\\s=\\s\\".*\\"/distversion = \\"$DISTRIB_ID $DISTRIB_RELEASE ($DISTRIB_REVISION)\\"/g" -e '\''s/distname    = .*$/distname    = ""/g'\'' /usr/lib/lua/luci/version.lua\nsed -i "s/luciname    = \\".*\\"/luciname    = \\"LuCI openwrt-23.05\\"/g" /usr/lib/lua/luci/version.lua\nsed -i "s/luciversion = \\".*\\"/luciversion = \\"v'$(date +%Y%m%d)'\\"/g" /usr/lib/lua/luci/version.lua\necho "export const revision = '\''v'$(date +%Y%m%d)'\'\'', branch = '\''LuCI openwrt-23.05'\'';" > /usr/share/ucode/luci/version.uc\n/etc/init.d/rpcd restart\n' package/new/default-settings/default/zzz-default-settings
 
 # coremark - prebuilt
 rm -rf feeds/packages/utils/coremark
@@ -34,7 +34,7 @@ mv ../master/lite-23.05/haproxy feeds/packages/net/haproxy
 sed -i '/ADDON+=USE_QUIC_OPENSSL_COMPAT=1/d' feeds/packages/net/haproxy/Makefile
 
 # mihomo - prebuilt
-if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y"; then
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-mihomo=y" && [ "$NO_APPS" != "y" ]; then
     mkdir -p files/etc/mihomo/run/ui
     if [ "$MINIMAL_BUILD" = "y" ]; then
         curl -Lso files/etc/mihomo/run/GeoSite.dat https://$github/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat
@@ -64,7 +64,7 @@ mkdir -p feeds/packages/net/sqm-scripts/patches
 curl -s https://$mirror/openwrt/patch/sqm/001-help-translation.patch > feeds/packages/net/sqm-scripts/patches/001-help-translation.patch
 
 # tailscale - prebuilt
-if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-tailscale=y"; then
+if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFIG_PACKAGE_luci-app-tailscale=y" && [ "$NO_APPS" != "y" ]; then
     mkdir -p files/etc/hotplug.d/iface
     curl -s https://$mirror/openwrt/files/etc/hotplug.d/iface/90-tailscale > files/etc/hotplug.d/iface/90-tailscale
 fi

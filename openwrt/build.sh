@@ -207,7 +207,7 @@ if [ "$CONFIG_CUSTOM" = "y" ]; then
     export cfg_cmd="eval awk '/### APPS/{exit} {print}'"
 else
     [ "$MINIMAL_BUILD" = "y" ] && export cfg_ver=lite || export cfg_ver=server
-    export cfg_cmd="cat"
+    [ "$NO_APPS" = "y" ] && export cfg_cmd="eval awk '/### APPS/{exit} {print}'" || export cfg_cmd="cat"
 fi
 
 ###############################################
@@ -259,7 +259,7 @@ else
 fi
 
 # config-common
-[ "$CONFIG_CUSTOM" = "y" ] && curl -s https://$mirror/openwrt/23-config-common-custom >> .config
+[ "$CONFIG_CUSTOM" = "y" ] && [ "$NO_APPS" != "y" ] && curl -s https://$mirror/openwrt/23-config-common-custom >> .config
 if [ "$MINIMAL_BUILD" = "y" ]; then
     curl -s https://$mirror/openwrt/23-config-common-lite | $cfg_cmd >> .config
     sed -i '/DOCKER/Id' .config
@@ -310,7 +310,7 @@ if [ "$ENABLE_LOCAL_KMOD" = "y" ]; then
 fi
 
 # upx
-[ "$MINIMAL_BUILD" = "y" ] && [ "$CONFIG_CUSTOM" != "y" ] && curl -s https://$mirror/openwrt/generic/upx_list.txt > upx_list.txt
+[ "$MINIMAL_BUILD" = "y" ] && [ "$CONFIG_CUSTOM" != "y" ] && [ "$NO_APPS" != "y" ] && curl -s https://$mirror/openwrt/generic/upx_list.txt > upx_list.txt
 
 # not all kmod
 [ "$NO_KMOD" = "y" ] && sed -i '/CONFIG_ALL_KMODS=y/d; /CONFIG_ALL_NONSHARED=y/d' .config
