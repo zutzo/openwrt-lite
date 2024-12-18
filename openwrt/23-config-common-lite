@@ -144,7 +144,6 @@ CONFIG_VERSION_FILENAMES=y
 CONFIG_ZLIB_OPTIMIZE_SPEED=y
 
 ### APPS
-CONFIG_PACKAGE_luci-app-autoreboot=y
 CONFIG_PACKAGE_luci-app-cpufreq=y
 CONFIG_PACKAGE_luci-app-ddns-go=y
 CONFIG_PACKAGE_luci-app-diskman=y
