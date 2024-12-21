@@ -54,6 +54,10 @@ if [ "$ENABLE_DPDK" = "y" ]; then
     sed -i '/-Dcapng=disabled/i\\t-Dnuma=disabled \\' feeds/packages/utils/irqbalance/Makefile
 fi
 
+# openssh - bump version
+rm -rf feeds/packages/net/openssh
+mv ../master/extd-23.05/openssh feeds/packages/net/openssh
+
 # samba4
 rm -rf feeds/packages/{net/samba4,libs/liburing} feeds/luci/applications/luci-app-samba4
 # rk3568 bind cpus
@@ -87,7 +91,7 @@ true > feeds/packages/utils/watchcat/files/watchcat.config
 # clean up old feeds
 rm -rf feeds/luci/applications/{luci-app-aria2,luci-app-frpc,luci-app-frps,luci-app-hd-idle,luci-app-ksmbd,luci-app-natmap,luci-app-nlbwmon,luci-app-upnp}
 rm -rf feeds/packages/admin/netdata
-rm -rf feeds/packages/net/{aria2,ddns-scripts,frp,iperf3,ksmbd-tools,microsocks,miniupnpd,nlbwmon,openssh,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale,zerotier}
+rm -rf feeds/packages/net/{aria2,ddns-scripts,frp,iperf3,ksmbd-tools,microsocks,miniupnpd,nlbwmon,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale,zerotier}
 rm -rf feeds/packages/utils/{lsof,screen,unzip,vim,zstd}
 
 # extd-23.05
