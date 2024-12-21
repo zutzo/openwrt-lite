@@ -266,6 +266,7 @@ if [ "$MINIMAL_BUILD" = "y" ]; then
     echo 'VERSION_TYPE="lite"' >> package/base-files/files/usr/lib/os-release
 else
     curl -s https://$mirror/openwrt/23-config-common-server | $cfg_cmd >> .config
+    [ "$NO_DOCKER" = "y" ] && sed -i '/DOCKER/Id' .config
     echo 'VERSION_TYPE="server"' >> package/base-files/files/usr/lib/os-release
 fi
 
