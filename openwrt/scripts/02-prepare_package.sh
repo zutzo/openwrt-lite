@@ -48,6 +48,13 @@ if curl -s "https://$mirror/openwrt/23-config-common-$cfg_ver" | grep -q "^CONFI
     mv zashboard-gh-pages files/etc/mihomo/run/ui/zashboard
 fi
 
+# net-snmp & collectd & rrdtool1 - bump version
+rm -rf feeds/packages/net/net-snmp
+mv ../master/lite-23.05/net-snmp feeds/packages/net/net-snmp
+rm -rf feeds/packages/utils/{collectd,rrdtool1}
+mv ../master/lite-23.05/collectd feeds/packages/utils/collectd
+mv ../master/lite-23.05/rrdtool1 feeds/packages/utils/rrdtool1
+
 # irqbalance - disable build with numa
 if [ "$ENABLE_DPDK" = "y" ]; then
     curl -s https://$mirror/openwrt/patch/irqbalance/011-meson-numa.patch > feeds/packages/utils/irqbalance/patches/011-meson-numa.patch
@@ -89,9 +96,9 @@ sed -i 's/procd_set_param stderr 1/procd_set_param stderr 0/g' feeds/packages/ut
 true > feeds/packages/utils/watchcat/files/watchcat.config
 
 # clean up old feeds
-rm -rf feeds/luci/applications/{luci-app-aria2,luci-app-frpc,luci-app-frps,luci-app-hd-idle,luci-app-ksmbd,luci-app-natmap,luci-app-nlbwmon,luci-app-upnp}
+rm -rf feeds/luci/applications/{luci-app-aria2,luci-app-frpc,luci-app-frps,luci-app-hd-idle,luci-app-ksmbd,luci-app-natmap,luci-app-nlbwmon,luci-app-smartdns,luci-app-upnp}
 rm -rf feeds/packages/admin/netdata
-rm -rf feeds/packages/net/{adguardhome,aria2,ddns-scripts,frp,iperf3,ksmbd-tools,microsocks,miniupnpd,nlbwmon,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,tailscale,zerotier}
+rm -rf feeds/packages/net/{adguardhome,aria2,ddns-scripts,frp,iperf3,ksmbd-tools,microsocks,miniupnpd,nlbwmon,xray-core,v2ray-core,v2ray-geodata,sing-box,shadowsocks-libev,smartdns,tailscale,zerotier}
 rm -rf feeds/packages/utils/{lsof,screen,unzip,vim,zstd}
 
 # extd-23.05
