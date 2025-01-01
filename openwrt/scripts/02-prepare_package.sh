@@ -65,6 +65,9 @@ fi
 rm -rf feeds/packages/net/openssh
 mv ../master/extd-23.05/openssh feeds/packages/net/openssh
 
+# passwall - disable run new dnsmasq
+[ "$DEV_BUILD" = "y" ] && sed -i 's/local RUN_NEW_DNSMASQ=1/local RUN_NEW_DNSMASQ=0/' ../master/lite-23.05/luci-app-passwall/root/usr/share/passwall/app.sh
+
 # samba4
 rm -rf feeds/packages/{net/samba4,libs/liburing} feeds/luci/applications/luci-app-samba4
 # rk3568 bind cpus
